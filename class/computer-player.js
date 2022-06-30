@@ -1,3 +1,4 @@
+const TTT = require('./ttt');
 
 class ComputerPlayer {
 
@@ -24,9 +25,19 @@ class ComputerPlayer {
   }
 
   static getWinningMoves(grid, symbol) {
+    let moves = ComputerPlayer.getValidMoves(grid);
+    let winningMoves = [];
+    
+    moves.forEach(move => {
+      const { row, col } = moves;
+      grid[row][col] = symbol;
 
-    // Your code here
+      if (TTT.checkWin(grid)) {
+        winningMoves.push(move);
+      }
+    });
 
+    return winningMoves;
   }
 
   static getSmartMove(grid, symbol) {
