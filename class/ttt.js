@@ -1,5 +1,6 @@
 const Screen = require("./screen");
 const Cursor = require("./cursor");
+const ComputerPlayer = require("./computer-player");
 
 class TTT {
 
@@ -33,22 +34,41 @@ class TTT {
     });
     Screen.addCommand('p', 'place a move at the cursor\'s position', () => {
       this.placeMove();
-      
-      const winner = TTT.checkWin(this.grid);
 
-      if (['O', 'X', 'T'].includes(winner)) {
-        TTT.endGame(winner);
-      }
+      this.computerMove();
     });
     Screen.addCommand('l', 'list all commands', () => {
       Screen.printCommands();
     });
 
-    Screen.setMessage(`It's ${this.playerTurn}'s turn`);
-
     Screen.render();
 
     Screen.printCommands();
+  }
+
+  checkGameState() {
+
+    const gameState = TTT.checkWin(this.grid);
+
+      if (['O', 'X', 'T'].includes(gameState)) {
+        TTT.endGame(gameState);
+      }
+
+  }
+
+  computerMove() {
+
+    const move = ComputerPlayer.getSmartMove(this.grid, this.playerTurn);
+    const { row, col } = move;
+    
+    this.grid[row][col] = this.playerTurn;
+    Screen.setGrid(row, col, this.playerTurn);
+    Screen.render();
+
+    this.playerTurn = 'O';
+
+    this.checkGameState();
+
   }
 
   placeMove() {
@@ -57,20 +77,15 @@ class TTT {
 
     if (this.grid[row][col] === ' ') {
       this.grid[row][col] = this.playerTurn;
-      
       Screen.setGrid(row, col, this.playerTurn);
-
-      if (this.playerTurn === 'X') {
-        this.playerTurn = 'O';
-      } else {
-        this.playerTurn = 'X';
-      }
-
-      Screen.setMessage(`It's ${this.playerTurn}'s turn`);
       Screen.render();
+
+      this.playerTurn = 'X';
     } else {
       console.log('space is occupied');
     }
+
+    this.checkGameState();
   }
 
   static checkWin(grid) {
