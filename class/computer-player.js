@@ -17,6 +17,7 @@ class ComputerPlayer {
   }
 
   static randomMove(grid) {
+
     const moves = ComputerPlayer.getValidMoves(grid);
     const randomInt = Math.floor(Math.random() * moves.length);
     const randomMove = moves[randomInt];
@@ -25,16 +26,19 @@ class ComputerPlayer {
   }
 
   static getWinningMoves(grid, symbol) {
-    let moves = ComputerPlayer.getValidMoves(grid);
+
+    const moves = ComputerPlayer.getValidMoves(grid);
     let winningMoves = [];
     
     moves.forEach(move => {
-      const { row, col } = moves;
+      const { row, col } = move;
       grid[row][col] = symbol;
 
       if (TTT.checkWin(grid)) {
         winningMoves.push(move);
       }
+
+      grid[row][col] = ' ';
     });
 
     return winningMoves;
@@ -42,7 +46,15 @@ class ComputerPlayer {
 
   static getSmartMove(grid, symbol) {
 
-    // Your code here
+    const winningMoves = ComputerPlayer.getWinningMoves(grid, symbol);
+    const opposingSymbol = symbol === 'X' ? 'O' : 'X';
+    const opposingWins = ComputerPlayer.getWinningMoves(grid, opposingSymbol);
+    
+    if (winningMoves.length > 0) {
+      return winningMoves[0];
+    } else if (opposingWins.length > 0) {
+      return opposingWins[0];
+    }
 
   }
 
