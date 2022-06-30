@@ -16,8 +16,11 @@ class ComputerPlayer {
   }
 
   static randomMove(grid) {
+    const moves = ComputerPlayer.getValidMoves(grid);
+    const randomInt = Math.floor(Math.random() * moves.length);
+    const randomMove = moves[randomInt];
 
-    // Your code here
+    return randomMove;
   }
 
   static getWinningMoves(grid, symbol) {
